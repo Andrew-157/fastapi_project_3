@@ -7,3 +7,11 @@ class UserBase(SQLModel):
                           max_length=255, min_length=5)
 
     email: EmailStr = Field(unique=True, index=True)
+
+
+class UserCreate(UserBase):
+    password: str
+
+
+class UserRead(UserBase):
+    id: int
