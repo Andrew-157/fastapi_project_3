@@ -8,7 +8,7 @@ from app.database import get_session
 from app.models import User
 from app.auth import generate_password_hash
 
-DATABASE_TEST_URL = 'sqlite:///:memory'
+DATABASE_TEST_URL = 'sqlite:///:memory:'
 
 
 @pytest.fixture(name='session')
@@ -48,8 +48,8 @@ class AuthActions(object):
               username: str | None = 'test_user',
               password: str | None = '34qwerty34'):
         response = self._client.post(
-            '/auth/login', data={'username': username,
-                                 'password': password}
+            '/users/login', data={'username': username,
+                                  'password': password}
         )
         token = response.json()["access_token"]
         return token

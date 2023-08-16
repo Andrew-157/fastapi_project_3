@@ -30,7 +30,7 @@ class TokenData(BaseModel):
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated="auto")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/login')
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl='users/login')
 
 
 def generate_password_hash(password):

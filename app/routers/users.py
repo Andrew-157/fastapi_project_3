@@ -16,11 +16,11 @@ from ..crud import get_user_with_username, get_user_with_email
 
 router = APIRouter(
     tags=['users'],
-    prefix='/auth'
+    prefix='/users'
 )
 
 
-@router.post('/users', response_model=UserRead,
+@router.post('/', response_model=UserRead,
              status_code=status.HTTP_201_CREATED)
 async def register(session: Annotated[Session, Depends(get_session)],
                    data: Annotated[UserCreate, Body()]):
@@ -44,7 +44,7 @@ async def register(session: Annotated[Session, Depends(get_session)],
     return new_user
 
 
-@router.post("/login", response_model=Token)
+@router.post('/login', response_model=Token)
 async def login(
     data: Annotated[OAuth2PasswordRequestForm, Depends()],
     session: Annotated[Session, Depends(get_session)]
@@ -69,12 +69,12 @@ async def login(
     }
 
 
-@router.get('/users/me', response_model=UserRead)
+@router.get('/me', response_model=UserRead)
 async def get_users_me(user: Annotated[User, Depends(get_current_user)]):
     return user
 
 
-@router.patch('/users/me', response_model=UserRead)
+@router.patch('/me', response_model=UserRead)
 async def update_user(
     current_user: Annotated[User, Depends(get_current_user)],
     session: Annotated[Session, Depends(get_session)],
@@ -84,7 +84,7 @@ async def update_user(
     if not data:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="No body provided"
+            detail="No data provided"
         )
 
     new_username = data.get("username")
@@ -104,7 +104,7 @@ async def update_user(
         if user_with_email and (user_with_email != current_user):
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
-                detail='Duplicate username'
+                detail='Duplicate email'
             )
         current_user.email = new_email
 
