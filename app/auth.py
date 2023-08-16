@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 from typing import Annotated
 
 from decouple import config
-from fastapi import FastAPI, HTTPException, status, Depends
+from fastapi import HTTPException, status, Depends
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
