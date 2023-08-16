@@ -7,7 +7,7 @@ from sqlmodel import Session, select
 
 
 from ..auth import create_access_token, get_current_user, authenticate_user, Token,\
-    ACCESS_TOKEN_EXPIRES_HOURS, get_password_hash
+    ACCESS_TOKEN_EXPIRES_HOURS, generate_password_hash
 from ..database import get_session
 from ..schemas import UserCreate, UserRead, UserUpdate
 from ..models import User
@@ -34,7 +34,7 @@ async def register(session: Annotated[Session, Depends(get_session)],
             status_code=status.HTTP_409_CONFLICT,
             detail='Duplicate email'
         )
-    hashed_password = get_password_hash(password=data.password)
+    hashed_password = generate_password_hash(password=data.password)
     new_user = User(username=data.username,
                     email=data.email,
                     hashed_password=hashed_password)
