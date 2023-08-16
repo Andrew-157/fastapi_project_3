@@ -1,5 +1,9 @@
 from sqlmodel import SQLModel, Field
-from pydantic import EmailStr
+from pydantic import EmailStr, BaseModel
+
+
+class RootModel(BaseModel):
+    is_root: bool = True
 
 
 class UserBase(SQLModel):

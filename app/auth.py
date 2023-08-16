@@ -28,7 +28,7 @@ class TokenData(BaseModel):
     username: str | None = None
 
 
-pwd_context = CryptContext(schemas=["bcrypt"], deprecated="auto")
+pwd_context = CryptContext(schemes=['bcrypt'], deprecated="auto")
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='auth/login')
 

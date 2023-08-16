@@ -41,3 +41,4 @@ async def register(session: Annotated[Session, Depends(get_session)],
     session.add(new_user)
     session.commit()
     session.refresh(new_user)
+    return new_user
