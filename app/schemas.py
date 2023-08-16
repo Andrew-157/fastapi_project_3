@@ -19,3 +19,9 @@ class UserCreate(UserBase):
 
 class UserRead(UserBase):
     id: int
+
+
+class UpdateUser(SQLModel):
+    username: str | None = Field(max_length=255, min_length=5,
+                                 default=None)
+    email: EmailStr | None = Field(default=None)
