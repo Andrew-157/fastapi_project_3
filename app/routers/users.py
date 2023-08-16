@@ -42,3 +42,28 @@ async def register(session: Annotated[Session, Depends(get_session)],
     session.commit()
     session.refresh(new_user)
     return new_user
+
+
+@router.post("/login", response_model=Token)
+async def login(
+    data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    session: Annotated[Session, Depends(get_session)]
+):
+    user = authenticate_user(session=session,
+                             username=data.username,
+                             password=data.password)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"}
+        )
+    access_token_expires = timedelta(hours=ACCESS_TOKEN_EXPIRES_HOURS)
+    access_token = create_access_token(
+        data={"sub": user.username},
+        expires_delta=access_token_expires
+    )
+    return {
+        "access_token": access_token,
+        "token_type": "bearer"
+    }

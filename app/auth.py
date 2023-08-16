@@ -42,7 +42,8 @@ def verify_password(plain_password, hashed_password):
 
 
 def authenticate_user(*, session: Session, username: str, password: str) -> bool | User:
-    user: User = get_user_with_username(username=username)
+    user: User = get_user_with_username(session=session,
+                                        username=username)
     if not user:
         return False
     if not verify_password(plain_password=password,
