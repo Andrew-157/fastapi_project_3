@@ -24,7 +24,6 @@ class TaggedQuestions(SQLModel, table=True):
 
 class Question(QuestionBase, table=True):
     id: int | None = Field(primary_key=True, default=None)
-    slug: str = Field(min_length=5, max_length=300)
     published: datetime = Field(default=datetime.utcnow())
     updated: datetime | None = Field(default=None)
     user_id: int = Field(foreign_key="user.id")

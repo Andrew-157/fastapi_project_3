@@ -28,13 +28,21 @@ class UserUpdate(SQLModel):
     email: EmailStr | None = Field(default=None)
 
 
+class TagBase(SQLModel):
+    name: str = Field(max_length=255, min_length=3)
+
+
+class TagRead(TagBase):
+    id: int
+
+
 class QuestionBase(SQLModel):
     title: str = Field(max_length=255, min_length=5)
-    content: str
+    content: str | None = Field(default=None)
 
 
 class QuestionCreate(QuestionBase):
-    tags: list[str] = Field(min_items=1)
+    tags: list[str] = Field()
 
 
 class QuestionRead(QuestionBase):
@@ -42,18 +50,10 @@ class QuestionRead(QuestionBase):
     published: datetime
     updated: datetime | None
     user: UserRead
-    tags: list["TagRead"]
+    tags: list[TagRead]
 
 
 class QuestionUpdate(SQLModel):
     title: str | None = Field(min_length=5, max_length=255)
     content: str | None = Field(default=None)
     tags: list[str] | None = Field(default=None)
-
-
-class TagBase(SQLModel):
-    name: str = Field(max_length=255, min_length=5)
-
-
-class TagRead(TagBase):
-    id: int
