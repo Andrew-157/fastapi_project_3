@@ -29,7 +29,7 @@ class UserUpdate(SQLModel):
 
 
 class TagBase(SQLModel):
-    name: str = Field(max_length=255, min_length=3)
+    name: str = Field(max_length=255, min_length=2)
 
 
 class TagRead(TagBase):
@@ -38,11 +38,12 @@ class TagRead(TagBase):
 
 class QuestionBase(SQLModel):
     title: str = Field(max_length=255, min_length=5)
-    content: str | None = Field(default=None)
+    content: str | None = Field(default=None, min_length=10)
 
 
 class QuestionCreate(QuestionBase):
-    tags: list[str] = Field()
+    # if tags are not set, [] is used
+    tags: list[str] = Field(default=[])
 
 
 class QuestionRead(QuestionBase):
@@ -54,6 +55,6 @@ class QuestionRead(QuestionBase):
 
 
 class QuestionUpdate(SQLModel):
-    title: str | None = Field(min_length=5, max_length=255)
+    title: str | None = Field(min_length=5, max_length=255, default=None)
     content: str | None = Field(default=None)
-    tags: list[str] | None = Field(default=None)
+    tags: list[str] = Field(default=[])

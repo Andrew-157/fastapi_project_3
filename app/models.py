@@ -14,7 +14,7 @@ class User(UserBase, table=True):
 
 class TaggedQuestions(SQLModel, table=True):
     __tablename__ = 'tagged_questions'
-    recommendation_id: int | None = Field(
+    question_id: int | None = Field(
         foreign_key='question.id', primary_key=True, default=None
     )
     tag_id: int | None = Field(
