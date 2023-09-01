@@ -64,3 +64,15 @@ class QuestionUpdate(SQLModel):
 
 class AnswerBase(SQLModel):
     content: str = Field(min_length=5)
+
+
+class AnswerRead(AnswerBase):
+    id: int
+    question_id: int
+    user: UserRead
+    published: datetime
+    updated: datetime | None
+
+
+class AnswerCreateUpdate(AnswerBase):
+    pass
