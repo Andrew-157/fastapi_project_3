@@ -1,13 +1,13 @@
 from datetime import datetime
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Body, HTTPException, status, Path
+from fastapi import APIRouter, Depends, Body, HTTPException, status, Path, Query
 from sqlmodel import Session
 
 
 from ..auth import get_current_user
 from ..database import get_session
-from ..crud import get_tag_by_name, get_question_by_id
+from ..crud import get_tag_by_name, get_question_by_id, get_all_questions
 from ..schemas import QuestionCreate, QuestionRead, QuestionUpdate
 from ..models import Question, Tag, User
 
@@ -29,6 +29,15 @@ def get_tags_objects(tags: list[str], session: Session) -> list[Tag]:
             tags_objects_list.append(new_tag_object)
 
     return tags_objects_list
+
+
+@router.get('/questions', response_model=list[QuestionRead])
+async def get_questions(*,
+                        session: Annotated[Session, Depends(get_session)],
+                        offset: Annotated[int | None, Query(gt=0)] = None,
+                        limit: Annotated[int | None, Query(gt=0)] = None):
+    questions = get_all_questions(session=session, offset=offset, limit=limit)
+    return questions
 
 
 @router.post('/questions',
