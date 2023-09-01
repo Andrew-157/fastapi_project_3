@@ -60,3 +60,7 @@ class QuestionUpdate(SQLModel):
     title: str | None = Field(min_length=5, max_length=255, default=None)
     content: str | None = Field(default=None, min_length=10)
     tags: list[str] = Field(default=[])
+
+
+class AnswerBase(SQLModel):
+    content: str = Field(min_length=5)

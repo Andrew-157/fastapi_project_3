@@ -1,7 +1,7 @@
 from datetime import datetime
-from sqlmodel import Field, Relationship, SQLModel
+from sqlmodel import Field, Relationship, SQLModel, ForeignKey
 
-from .schemas import UserBase, QuestionBase, TagBase
+from .schemas import UserBase, QuestionBase, TagBase, AnswerBase
 
 
 class User(UserBase, table=True):
@@ -10,6 +10,7 @@ class User(UserBase, table=True):
 
     questions: list["Question"] = Relationship(
         back_populates="user", sa_relationship_kwargs={"cascade": "delete"})
+    answers: list["Answer"] = Relationship(back_populates="user")
 
 
 class TaggedQuestions(SQLModel, table=True):
@@ -30,7 +31,16 @@ class Question(QuestionBase, table=True):
 
     user: User = Relationship(back_populates='questions')
     tags: list["Tag"] = Relationship(link_model=TaggedQuestions)
+    answers: list["Answer"] = Relationship(back_populates='question')
 
 
 class Tag(TagBase, table=True):
     id: int | None = Field(primary_key=True, default=None)
+
+
+class Answer(AnswerBase, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    user_id: int = ForeignKey('user.id', ondelete='CASCADE')
+    question_id: int = ForeignKey('question.id', ondelete='CASCADE')
+    published: datetime = Field(default=datetime.utcnow())
+    updated: datetime | None = Field(default=None)
