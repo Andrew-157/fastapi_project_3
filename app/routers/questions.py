@@ -25,7 +25,6 @@ def get_tags_objects(tags: list[str], session: Session) -> list[Tag]:
         if tag_object:
             tags_objects_list.append(tag_object)
         else:
-            print(tag)
             new_tag_object = Tag(name=tag)
             tags_objects_list.append(new_tag_object)
 
