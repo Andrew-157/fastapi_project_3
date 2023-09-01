@@ -63,7 +63,7 @@ class QuestionUpdate(SQLModel):
 
 
 class AnswerBase(SQLModel):
-    content: str = Field(min_length=5)
+    content: str = Field(min_length=10)
 
 
 class AnswerRead(AnswerBase):
