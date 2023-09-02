@@ -56,7 +56,7 @@ class QuestionRead(QuestionBase):
 
 class QuestionUpdate(SQLModel):
     # Apart from allowing values to be optional,
-    # they will also be used in Body().dict() if exclude_unset=False
+    # they will(default values) also be used in Body().dict() if exclude_unset=False
     title: str | None = Field(min_length=5, max_length=255, default=None)
     content: str | None = Field(default=None, min_length=10)
     tags: list[str] = Field(default=[])

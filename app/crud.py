@@ -1,8 +1,8 @@
-from sqlmodel import Session, select
+from sqlmodel import Session, select, and_
 from sqlalchemy import asc
 from sqlalchemy.orm import joinedload
 
-from .models import User, Tag, Question
+from .models import User, Tag, Question, Answer
 
 
 def get_user_with_username(session: Session, username: str) -> User | None:
@@ -34,3 +34,15 @@ def get_all_questions(session: Session,
             joinedload(Question.tags),
             joinedload(Question.user)
         ).order_by(asc(Question.id))).unique().all()
+
+
+def get_answer_by_id_and_question_id(session: Session,
+                                     question_id: int,
+                                     id: int) -> Answer | None:
+    return session.exec(
+        select(Answer).
+        where(and_(Answer.id == id,
+                   Answer.question_id == question_id)).
+        options(
+            joinedload(Answer.user)
+        )).first()
