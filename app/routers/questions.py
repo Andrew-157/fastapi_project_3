@@ -35,8 +35,10 @@ def get_tags_objects(tags: list[str], session: Session) -> list[Tag]:
 async def get_questions(*,
                         session: Annotated[Session, Depends(get_session)],
                         offset: Annotated[int | None, Query(gt=0)] = None,
-                        limit: Annotated[int | None, Query(gt=0)] = None):
-    questions = get_all_questions(session=session, offset=offset, limit=limit)
+                        limit: Annotated[int | None, Query(gt=0)] = None,
+                        search_string: Annotated[str | None, Query()] = None):
+    questions = get_all_questions(
+        session=session, offset=offset, limit=limit, search_string=search_string)
     return questions
 
 

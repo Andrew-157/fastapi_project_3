@@ -25,7 +25,17 @@ def get_question_by_id(session: Session, id: int) -> Question | None:
 
 def get_all_questions(session: Session,
                       limit: int | None = None,
-                      offset: int | None = None):
+                      offset: int | None = None,
+                      search_string: str | None = None):
+    if search_string:
+        return session.exec(
+            select(Question).where(Question.title.contains(search_string)).
+            offset(offset=offset).
+            limit(limit=limit).
+            options(
+                joinedload(Question.tags),
+                joinedload(Question.user)
+            ).order_by(asc(Question.id))).unique().all()
     return session.exec(
         select(Question).
         offset(offset=offset).
