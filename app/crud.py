@@ -1,5 +1,5 @@
 from sqlmodel import Session, select, and_
-from sqlalchemy import asc
+from sqlalchemy import asc, desc
 from sqlalchemy.orm import joinedload
 
 from .models import User, Tag, Question, Answer
@@ -46,3 +46,22 @@ def get_answer_by_id_and_question_id(session: Session,
         options(
             joinedload(Answer.user)
         )).first()
+
+
+def get_all_answers(session: Session,
+                    question_id: int,
+                    offset: int,
+                    limit: int,
+                    by_date_asc: bool | None = None):
+    ordering = None
+    if by_date_asc == None:
+        ordering = asc(Answer.id)
+    if by_date_asc == True:
+        ordering = asc(Answer.published)
+    if by_date_asc == False:
+        ordering = desc(Answer.published)
+    return session.exec(
+        select(Answer).
+        where(Answer.question_id == question_id).
+        offset(offset=offset).limit(limit=limit).
+        order_by(ordering)).unique().all()
