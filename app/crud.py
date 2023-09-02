@@ -50,8 +50,8 @@ def get_answer_by_id_and_question_id(session: Session,
 
 def get_all_answers(session: Session,
                     question_id: int,
-                    offset: int,
-                    limit: int,
+                    offset: int | None = None,
+                    limit: int | None = None,
                     by_date_asc: bool | None = None):
     ordering = None
     if by_date_asc == None:
@@ -64,4 +64,5 @@ def get_all_answers(session: Session,
         select(Answer).
         where(Answer.question_id == question_id).
         offset(offset=offset).limit(limit=limit).
-        order_by(ordering)).unique().all()
+        options(joinedload(Answer.user)).
+        order_by(ordering)).all()

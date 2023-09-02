@@ -1,8 +1,10 @@
 from typing import Annotated
 from datetime import datetime
 
-from fastapi import APIRouter, Depends, Path, Body, HTTPException, status
-from sqlmodel import Session
+from fastapi import APIRouter, Depends, Path, Body, HTTPException, status, Query
+from sqlmodel import Session, select
+from sqlalchemy.orm import joinedload
+from sqlalchemy import asc
 
 
 from ..auth import get_current_user
@@ -38,6 +40,24 @@ async def post_answer(
     session.commit()
     session.refresh(answer)
     return answer
+
+
+@router.get('/questions/{question_id}/answers', response_model=list[AnswerRead])
+def get_answers(*,
+                question_id: Annotated[int, Path(ge=1)],
+                offset: Annotated[int | None, Query(gt=0)] = None,
+                limit: Annotated[int | None, Query(gt=0)] = None,
+                by_date_asc: Annotated[bool | None, Query()] = None,
+                session: Annotated[Session, Depends(get_session)]):
+    question = session.get(Question, question_id)
+    if not question:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f'Question with id {question_id} was not found.'
+        )
+    answers = get_all_answers(question_id=question_id,
+                              session=session, offset=offset, limit=limit, by_date_asc=by_date_asc)
+    return answers
 
 
 @router.get('/questions/{question_id}/answers/{id}', response_model=AnswerRead)
