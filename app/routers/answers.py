@@ -60,3 +60,38 @@ async def get_answer(*,
             detail=f'Answer with id {id} was not found for question with id {question_id}.'
         )
     return answer
+
+
+@router.put('/questions/{question_id}/answers/{id}', response_model=AnswerRead)
+async def update_answer(*,
+                        user: Annotated[User, Depends(get_current_user)],
+                        session: Annotated[Session, Depends(get_session)],
+                        question_id: Annotated[int, Path(ge=1)],
+                        id: Annotated[int, Path(ge=1)],
+                        data: Annotated[AnswerCreateUpdate, Body()]):
+    question = session.get(Question, question_id)
+    if not question:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f'Question with id {question_id} was not found.'
+        )
+    answer = get_answer_by_id_and_question_id(
+        session=session, question_id=question_id, id=id
+    )
+    if not answer:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f'Answer with id {id} was not found for question with id {question_id}.'
+        )
+    if answer.user != user:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=('Current user has no permission '
+                    'to perform PUT operation on answer with {id}.'.format(id=id))
+        )
+    answer.content = data.content
+    answer.updated = datetime.utcnow()
+    session.add(answer)
+    session.commit()
+    session.refresh(answer)
+    return answer
